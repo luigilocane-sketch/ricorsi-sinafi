@@ -13,7 +13,8 @@ import json
 
 from models import (
     Ricorso, RicorsoCreate, RicorsoUpdate, Admin, AdminLogin, AdminCreate,
-    Token, Submission, CampoData, DocumentoRichiesto
+    Token, Submission, CampoData, DocumentoRichiesto, AdminCreateManual,
+    AdminInvite, InviteToken, AdminRegisterWithToken
 )
 from auth import (
     verify_password, get_password_hash, create_access_token, verify_token,
