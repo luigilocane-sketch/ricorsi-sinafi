@@ -85,6 +85,27 @@ export const uploadFile = async (submissionId, documentId, file) => {
   return response.data;
 };
 
+export const uploadEsempioFile = async (ricorsoId, documentId, file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  const response = await api.post(`/upload-esempio/${ricorsoId}/${documentId}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
+
+export const deleteEsempioFile = async (ricorsoId, documentId) => {
+  const response = await api.delete(`/esempio/${ricorsoId}/${documentId}`);
+  return response.data;
+};
+
+export const getEsempioFileUrl = (ricorsoId, documentId) => {
+  return `${API}/esempio/${ricorsoId}/${documentId}`;
+};
+
 export const getSubmissions = async (ricorsoId = null) => {
   const params = ricorsoId ? { ricorso_id: ricorsoId } : {};
   const response = await api.get('/submissions', { params });
