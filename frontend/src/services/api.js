@@ -117,4 +117,44 @@ export const getSubmissionsStats = async (ricorsoId) => {
   return response.data;
 };
 
+// Admin Management
+export const createAdminManual = async (adminData) => {
+  const response = await api.post('/admin/create-manual', adminData);
+  return response.data;
+};
+
+export const createInvite = async (inviteData) => {
+  const response = await api.post('/admin/invite', inviteData);
+  return response.data;
+};
+
+export const validateInvite = async (token) => {
+  const response = await axios.get(`${API}/admin/invite/validate/${token}`);
+  return response.data;
+};
+
+export const registerWithInvite = async (token, username, password) => {
+  const response = await axios.post(`${API}/admin/register-with-invite`, {
+    token,
+    username,
+    password
+  });
+  return response.data;
+};
+
+export const listAdmins = async () => {
+  const response = await api.get('/admin/list');
+  return response.data;
+};
+
+export const deleteAdmin = async (adminId) => {
+  const response = await api.delete(`/admin/delete/${adminId}`);
+  return response.data;
+};
+
+export const listInvites = async () => {
+  const response = await api.get('/admin/invites');
+  return response.data;
+};
+
 export default api;
