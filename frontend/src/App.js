@@ -443,6 +443,18 @@ function App() {
             </div>
           </form>
         </div>
+
+        {/* Footer */}
+        <footer className="bg-gradient-to-br from-[#1a4a2e] to-[#2d5a3f] py-8 mt-12">
+          <div className="max-w-4xl mx-auto px-4 text-center">
+            <p className="text-white text-sm mb-2">
+              © 2026 Si.Na.Fi - Sindacato Nazionale Finanzieri
+            </p>
+            <p className="text-green-200 text-xs">
+              Cum Grano Salis
+            </p>
+          </div>
+        </footer>
       </div>
     </div>
   );
