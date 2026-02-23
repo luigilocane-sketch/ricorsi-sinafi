@@ -51,7 +51,7 @@ logger = logging.getLogger(__name__)
 @api_router.post("/admin/register", response_model=dict)
 async def register_admin(admin: AdminCreate):
     """Register a new admin (first time only)"""
-    existing = await db.admins.find_one({"username": admin.username})
+    existing = await db.admins.find_one({"username": admin.username}, {"_id": 0})
     if existing:
         raise HTTPException(status_code=400, detail="Username already exists")
     
@@ -66,7 +66,7 @@ async def register_admin(admin: AdminCreate):
 @api_router.post("/admin/login", response_model=Token)
 async def login_admin(credentials: AdminLogin):
     """Admin login"""
-    admin = await db.admins.find_one({"username": credentials.username})
+    admin = await db.admins.find_one({"username": credentials.username}, {"_id": 0})
     if not admin or not verify_password(credentials.password, admin["password_hash"]):
         raise HTTPException(
             status_code=401,
