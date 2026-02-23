@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { getRicorso, createRicorso, updateRicorso } from '../services/api';
+import { getRicorso, createRicorso, updateRicorso, uploadEsempioFile, deleteEsempioFile } from '../services/api';
 import {
   Shield, ArrowLeft, Plus, Trash2, Save, Eye, EyeOff,
-  FileText, Type, Mail, Phone, Calendar, Hash, List
+  FileText, Type, Mail, Phone, Calendar, Hash, List, Upload, X
 } from 'lucide-react';
 import { toast } from '../hooks/use-toast';
 
