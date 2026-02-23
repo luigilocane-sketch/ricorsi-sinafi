@@ -91,6 +91,181 @@ async def check_admin(username: str = Depends(verify_token)):
     return {"username": username, "authenticated": True}
 
 
+
+@api_router.post("/admin/create-manual")
+async def create_admin_manual(admin_data: AdminCreateManual, username: str = Depends(verify_token)):
+    """Create a new admin manually (admin only)"""
+    # Check if username already exists
+    existing = await db.admins.find_one({"username": admin_data.username})
+    if existing:
+        raise HTTPException(status_code=400, detail="Username già esistente")
+    
+    # Check if email already exists
+    existing_email = await db.admins.find_one({"email": admin_data.email})
+    if existing_email:
+        raise HTTPException(status_code=400, detail="Email già utilizzata")
+    
+    admin_dict = {
+        "id": str(uuid.uuid4()),
+        "username": admin_data.username,
+        "password_hash": get_password_hash(admin_data.password),
+        "nome": admin_data.nome,
+        "cognome": admin_data.cognome,
+        "email": admin_data.email,
+        "ruolo": "admin",
+        "created_by": username,
+        "created_at": datetime.utcnow()
+    }
+    await db.admins.insert_one(admin_dict)
+    
+    # Return admin without password
+    del admin_dict["password_hash"]
+    return {"message": "Admin creato con successo", "admin": admin_dict}
+
+
+@api_router.post("/admin/invite")
+async def create_invite(invite_data: AdminInvite, username: str = Depends(verify_token)):
+    """Generate an invite token for a new admin (admin only)"""
+    # Check if email already exists
+    existing_email = await db.admins.find_one({"email": invite_data.email})
+    if existing_email:
+        raise HTTPException(status_code=400, detail="Email già utilizzata da un admin esistente")
+    
+    # Check if there's already an active invite for this email
+    existing_invite = await db.invite_tokens.find_one({
+        "email": invite_data.email,
+        "used": False,
+        "expires_at": {"$gt": datetime.utcnow()}
+    })
+    if existing_invite:
+        raise HTTPException(status_code=400, detail="Esiste già un invito attivo per questa email")
+    
+    # Create invite token (expires in 7 days)
+    import uuid as uuid_lib
+    invite = InviteToken(
+        token=str(uuid_lib.uuid4()),
+        email=invite_data.email,
+        nome=invite_data.nome,
+        cognome=invite_data.cognome,
+        created_by=username,
+        expires_at=datetime.utcnow() + timedelta(days=7)
+    )
+    
+    await db.invite_tokens.insert_one(invite.dict())
+    
+    # Generate invite URL (frontend will use this)
+    invite_url = f"/admin/register/{invite.token}"
+    
+    return {
+        "message": "Invito creato con successo",
+        "token": invite.token,
+        "invite_url": invite_url,
+        "expires_at": invite.expires_at,
+        "email": invite.email
+    }
+
+
+@api_router.get("/admin/invite/validate/{token}")
+async def validate_invite(token: str):
+    """Validate an invite token (public endpoint)"""
+    invite = await db.invite_tokens.find_one({"token": token})
+    
+    if not invite:
+        raise HTTPException(status_code=404, detail="Invito non trovato")
+    
+    if invite["used"]:
+        raise HTTPException(status_code=400, detail="Invito già utilizzato")
+    
+    if invite["expires_at"] < datetime.utcnow():
+        raise HTTPException(status_code=400, detail="Invito scaduto")
+    
+    return {
+        "valid": True,
+        "email": invite["email"],
+        "nome": invite["nome"],
+        "cognome": invite["cognome"]
+    }
+
+
+@api_router.post("/admin/register-with-invite")
+async def register_admin_with_invite(registration: AdminRegisterWithToken):
+    """Register as admin using an invite token (public endpoint)"""
+    # Validate token
+    invite = await db.invite_tokens.find_one({"token": registration.token})
+    
+    if not invite:
+        raise HTTPException(status_code=404, detail="Invito non trovato")
+    
+    if invite["used"]:
+        raise HTTPException(status_code=400, detail="Invito già utilizzato")
+    
+    if invite["expires_at"] < datetime.utcnow():
+        raise HTTPException(status_code=400, detail="Invito scaduto")
+    
+    # Check if username already exists
+    existing = await db.admins.find_one({"username": registration.username})
+    if existing:
+        raise HTTPException(status_code=400, detail="Username già esistente")
+    
+    # Create admin
+    import uuid as uuid_lib
+    admin_dict = {
+        "id": str(uuid_lib.uuid4()),
+        "username": registration.username,
+        "password_hash": get_password_hash(registration.password),
+        "nome": invite["nome"],
+        "cognome": invite["cognome"],
+        "email": invite["email"],
+        "ruolo": "admin",
+        "created_by": invite["created_by"],
+        "created_at": datetime.utcnow()
+    }
+    await db.admins.insert_one(admin_dict)
+    
+    # Mark invite as used
+    await db.invite_tokens.update_one(
+        {"token": registration.token},
+        {"$set": {"used": True}}
+    )
+    
+    return {"message": "Registrazione completata con successo", "username": registration.username}
+
+
+@api_router.get("/admin/list")
+async def list_admins(username: str = Depends(verify_token)):
+    """Get list of all admins (admin only)"""
+    admins = await db.admins.find({}, {"password_hash": 0}).sort("created_at", -1).to_list(100)
+    return admins
+
+
+@api_router.delete("/admin/delete/{admin_id}")
+async def delete_admin(admin_id: str, username: str = Depends(verify_token)):
+    """Delete an admin (admin only)"""
+    # Check if trying to delete self
+    current_admin = await db.admins.find_one({"username": username})
+    if current_admin and current_admin.get("id") == admin_id:
+        raise HTTPException(status_code=400, detail="Non puoi eliminare il tuo stesso account")
+    
+    # Check if admin exists
+    admin_to_delete = await db.admins.find_one({"id": admin_id})
+    if not admin_to_delete:
+        raise HTTPException(status_code=404, detail="Admin non trovato")
+    
+    # Delete admin
+    result = await db.admins.delete_one({"id": admin_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Admin non trovato")
+    
+    return {"message": "Admin eliminato con successo"}
+
+
+@api_router.get("/admin/invites")
+async def list_invites(username: str = Depends(verify_token)):
+    """Get list of all invite tokens (admin only)"""
+    invites = await db.invite_tokens.find({}).sort("created_at", -1).to_list(100)
+    return invites
+
+
 # ============= RICORSI ROUTES =============
 
 @api_router.post("/ricorsi", response_model=Ricorso)
