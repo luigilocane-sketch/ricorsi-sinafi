@@ -1,0 +1,94 @@
+import axios from 'axios';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
+
+const api = axios.create({
+  baseURL: API,
+});
+
+// Add token to requests
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('admin_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Admin Auth
+export const adminLogin = async (username, password) => {
+  const response = await api.post('/admin/login', { username, password });
+  localStorage.setItem('admin_token', response.data.access_token);
+  return response.data;
+};
+
+export const adminLogout = () => {
+  localStorage.removeItem('admin_token');
+};
+
+export const checkAdmin = async () => {
+  try {
+    const response = await api.get('/admin/check');
+    return response.data;
+  } catch (error) {
+    return null;
+  }
+};
+
+// Ricorsi
+export const getRicorsi = async (attivo = null) => {
+  const params = attivo !== null ? { attivo } : {};
+  const response = await api.get('/ricorsi', { params });
+  return response.data;
+};
+
+export const getRicorso = async (id) => {
+  const response = await api.get(`/ricorsi/${id}`);
+  return response.data;
+};
+
+export const createRicorso = async (ricorso) => {
+  const response = await api.post('/ricorsi', ricorso);
+  return response.data;
+};
+
+export const updateRicorso = async (id, ricorso) => {
+  const response = await api.put(`/ricorsi/${id}`, ricorso);
+  return response.data;
+};
+
+export const deleteRicorso = async (id) => {
+  const response = await api.delete(`/ricorsi/${id}`);
+  return response.data;
+};
+
+// Submissions
+export const createSubmission = async (ricorsoId, datiUtente) => {
+  const formData = new FormData();
+  formData.append('ricorso_id', ricorsoId);
+  formData.append('dati_utente', JSON.stringify(datiUtente));
+  
+  const response = await api.post('/submissions', formData);
+  return response.data;
+};
+
+export const uploadFile = async (submissionId, documentId, file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  const response = await api.post(`/upload/${submissionId}/${documentId}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
+
+export const getSubmissions = async (ricorsoId = null) => {
+  const params = ricorsoId ? { ricorso_id: ricorsoId } : {};
+  const response = await api.get('/submissions', { params });
+  return response.data;
+};
+
+export default api;
