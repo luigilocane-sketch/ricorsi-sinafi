@@ -11,7 +11,7 @@ import os
 from datetime import datetime
 
 # Get the backend URL from environment
-BACKEND_URL = "https://credits-compute-1.preview.emergentagent.com/api"
+BACKEND_URL = "https://ricorso-system.preview.emergentagent.com/api"
 
 class RicorsiAPITester:
     def __init__(self):

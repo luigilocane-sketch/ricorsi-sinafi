@@ -10,7 +10,7 @@ import sys
 from datetime import datetime
 
 # Backend URL from environment
-BACKEND_URL = "https://credits-compute-1.preview.emergentagent.com/api"
+BACKEND_URL = "https://ricorso-system.preview.emergentagent.com/api"
 
 class DeleteRicorsoTester:
     def __init__(self):
