@@ -147,6 +147,13 @@ function AdminDashboard() {
                 </div>
                 <div className="flex gap-2">
                   <button
+                    onClick={() => navigate(`/admin/stats/${ricorso.id}`)}
+                    className="flex-1 bg-blue-600 text-white hover:bg-blue-700 font-semibold px-4 py-2 rounded-sm transition-all flex items-center justify-center gap-2 text-sm"
+                  >
+                    <BarChart3 size={16} />
+                    Statistiche
+                  </button>
+                  <button
                     onClick={() => navigate(`/admin/ricorso/${ricorso.id}`)}
                     className="flex-1 bg-[#1a4a2e] text-white hover:bg-[#0f2d1c] font-semibold px-4 py-2 rounded-sm transition-all flex items-center justify-center gap-2 text-sm"
                   >
