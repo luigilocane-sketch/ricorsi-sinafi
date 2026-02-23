@@ -214,8 +214,8 @@ function RicorsoForm() {
             Torna alla Dashboard
           </button>
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-              <Shield className="text-[#1a4a2e]" size={24} />
+            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center p-1">
+              <img src="/sinafi-logo.png" alt="Si.Na.Fi Logo" className="w-full h-full object-contain" />
             </div>
             <div>
               <h1 className="text-white font-black text-xl tracking-tight">
