@@ -261,7 +261,7 @@ async def startup_event():
         # Create default ricorso
         default_ricorso = Ricorso(
             titolo="Ricorso Indennità Compensativa",
-            descrizione="Ricorso collettivo per l'indennità compensativa dei membri della Guardia di Finanza",
+            descrizione="Ricorso collettivo per l'indennità compensativa riservato ai soci Si.Na.Fi.",
             badge_text="RICORSO COLLETTIVO",
             campi_dati=[
                 CampoData(id="nome", label="Nome", type="text", required=True, placeholder="Mario"),
