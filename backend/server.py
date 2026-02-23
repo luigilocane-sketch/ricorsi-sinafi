@@ -324,6 +324,82 @@ async def get_submissions(ricorso_id: Optional[str] = None, username: str = Depe
     return submissions
 
 
+@api_router.get("/submissions/stats/{ricorso_id}")
+async def get_submissions_stats(ricorso_id: str, username: str = Depends(verify_token)):
+    """Get statistics by region for a ricorso (admin only)"""
+    # Get ricorso
+    ricorso = await db.ricorsi.find_one({"id": ricorso_id})
+    if not ricorso:
+        raise HTTPException(status_code=404, detail="Ricorso not found")
+    
+    # Get all submissions for this ricorso
+    submissions = await db.submissions.find({"ricorso_id": ricorso_id}).to_list(10000)
+    
+    # Find the regione field
+    regione_field_id = None
+    for campo in ricorso.get("campi_dati", []):
+        if campo.get("label", "").lower() == "regione" or campo.get("id") == "regione":
+            regione_field_id = campo.get("id")
+            break
+    
+    if not regione_field_id:
+        return {
+            "ricorso_id": ricorso_id,
+            "ricorso_titolo": ricorso.get("titolo"),
+            "totale_submissions": len(submissions),
+            "per_regione": {},
+            "scadenze_regioni": ricorso.get("scadenze_regioni", {}),
+            "message": "Nessun campo regione trovato"
+        }
+    
+    # Group by region
+    stats_per_regione = {}
+    for sub in submissions:
+        regione = sub.get("dati_utente", {}).get(regione_field_id, "Non specificata")
+        if regione not in stats_per_regione:
+            stats_per_regione[regione] = {
+                "count": 0,
+                "submissions": []
+            }
+        stats_per_regione[regione]["count"] += 1
+        stats_per_regione[regione]["submissions"].append({
+            "id": sub.get("id"),
+            "reference_id": sub.get("reference_id"),
+            "submitted_at": sub.get("submitted_at")
+        })
+    
+    # Calculate scadenze imminenti (entro 30 giorni)
+    from datetime import timedelta
+    scadenze_imminenti = []
+    scadenze_regioni = ricorso.get("scadenze_regioni", {})
+    
+    for regione, scadenza_str in scadenze_regioni.items():
+        try:
+            scadenza = datetime.fromisoformat(scadenza_str.replace('Z', '+00:00'))
+            giorni_rimanenti = (scadenza - datetime.utcnow()).days
+            
+            if 0 <= giorni_rimanenti <= 30:
+                scadenze_imminenti.append({
+                    "regione": regione,
+                    "scadenza": scadenza_str,
+                    "giorni_rimanenti": giorni_rimanenti,
+                    "submissions_ricevute": stats_per_regione.get(regione, {}).get("count", 0)
+                })
+        except:
+            pass
+    
+    return {
+        "ricorso_id": ricorso_id,
+        "ricorso_titolo": ricorso.get("titolo"),
+        "totale_submissions": len(submissions),
+        "per_regione": stats_per_regione,
+        "scadenze_regioni": scadenze_regioni,
+        "scadenza_generale": ricorso.get("scadenza_generale"),
+        "scadenze_imminenti": scadenze_imminenti
+    }
+
+
+
 # ============= UTILITY ROUTES =============
 
 @api_router.get("/")
