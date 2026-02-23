@@ -74,9 +74,15 @@ class RicorsoUpdate(BaseModel):
 
 
 class Admin(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     username: str
     password_hash: str
+    nome: Optional[str] = None
+    cognome: Optional[str] = None
+    email: Optional[str] = None
+    ruolo: str = "admin"
     created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_by: Optional[str] = None  # username dell'admin che l'ha creato
 
 
 class AdminLogin(BaseModel):
@@ -85,6 +91,40 @@ class AdminLogin(BaseModel):
 
 
 class AdminCreate(BaseModel):
+    username: str
+    password: str
+    nome: Optional[str] = None
+    cognome: Optional[str] = None
+    email: Optional[str] = None
+
+
+class AdminCreateManual(BaseModel):
+    username: str
+    password: str
+    nome: str
+    cognome: str
+    email: EmailStr
+
+
+class AdminInvite(BaseModel):
+    nome: str
+    cognome: str
+    email: EmailStr
+
+
+class InviteToken(BaseModel):
+    token: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    email: EmailStr
+    nome: str
+    cognome: str
+    created_by: str  # username dell'admin che ha creato l'invito
+    expires_at: datetime
+    used: bool = False
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class AdminRegisterWithToken(BaseModel):
+    token: str
     username: str
     password: str
 
