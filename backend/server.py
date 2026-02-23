@@ -106,14 +106,14 @@ async def get_ricorsi(attivo: Optional[bool] = None):
     if attivo is not None:
         query["attivo"] = attivo
     
-    ricorsi = await db.ricorsi.find(query).sort("created_at", -1).to_list(100)
+    ricorsi = await db.ricorsi.find(query, {"_id": 0}).sort("created_at", -1).to_list(100)
     return [Ricorso(**r) for r in ricorsi]
 
 
 @api_router.get("/ricorsi/{ricorso_id}", response_model=Ricorso)
 async def get_ricorso(ricorso_id: str):
     """Get a specific ricorso by ID"""
-    ricorso = await db.ricorsi.find_one({"id": ricorso_id})
+    ricorso = await db.ricorsi.find_one({"id": ricorso_id}, {"_id": 0})
     if not ricorso:
         raise HTTPException(status_code=404, detail="Ricorso not found")
     return Ricorso(**ricorso)
