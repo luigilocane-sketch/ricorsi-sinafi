@@ -1,8 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Shield, User, Hash, Phone, Building, Mail, MapPin, FileText, Upload, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { Toaster } from './components/ui/sonner';
 import { toast } from './hooks/use-toast';
+import { AuthProvider } from './context/AuthContext';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
+import RicorsoForm from './pages/RicorsoForm';
 
 const REGIONI_ITALIANE = [
   'Abruzzo', 'Basilicata', 'Calabria', 'Campania', 'Emilia-Romagna',
