@@ -497,7 +497,7 @@ async def get_submissions(ricorso_id: Optional[str] = None, username: str = Depe
     if ricorso_id:
         query["ricorso_id"] = ricorso_id
     
-    submissions = await db.submissions.find(query, {"_id": 0}).sort("submitted_at", -1).to_list(1000)
+    submissions = await db.submissions.find(query, {"_id": 0}).sort("submitted_at", -1).limit(500).to_list(500)
     return submissions
 
 
