@@ -126,7 +126,7 @@ async def update_ricorso(
     username: str = Depends(verify_token)
 ):
     """Update a ricorso (admin only)"""
-    existing = await db.ricorsi.find_one({"id": ricorso_id})
+    existing = await db.ricorsi.find_one({"id": ricorso_id}, {"_id": 0})
     if not existing:
         raise HTTPException(status_code=404, detail="Ricorso not found")
     
@@ -136,7 +136,7 @@ async def update_ricorso(
         update_data["updated_at"] = datetime.utcnow()
         await db.ricorsi.update_one({"id": ricorso_id}, {"$set": update_data})
     
-    updated = await db.ricorsi.find_one({"id": ricorso_id})
+    updated = await db.ricorsi.find_one({"id": ricorso_id}, {"_id": 0})
     return Ricorso(**updated)
 
 
