@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Shield, ChevronRight, CheckCircle2, Upload, MapPin, Hash, Phone, Building, Mail, Calendar, User, ExternalLink } from 'lucide-react';
-import { getRicorso, createSubmission, uploadFile } from '../services/api';
+import { getRicorso, createSubmission, uploadFile, getEsempioFileUrl } from '../services/api';
 import { toast } from '../hooks/use-toast';
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 function PublicRicorsoPage() {
   const { ricorsoId } = useParams();
