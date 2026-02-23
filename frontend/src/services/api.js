@@ -112,4 +112,9 @@ export const getSubmissions = async (ricorsoId = null) => {
   return response.data;
 };
 
+export const getSubmissionsStats = async (ricorsoId) => {
+  const response = await api.get(`/submissions/stats/${ricorsoId}`);
+  return response.data;
+};
+
 export default api;
