@@ -10,6 +10,7 @@ from typing import List, Optional
 from datetime import datetime, timedelta
 import shutil
 import json
+import uuid
 
 from models import (
     Ricorso, RicorsoCreate, RicorsoUpdate, Admin, AdminLogin, AdminCreate,
