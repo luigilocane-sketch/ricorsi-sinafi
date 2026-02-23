@@ -52,6 +52,8 @@ function App() {
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/ricorso/:id" element={<RicorsoForm />} />
             <Route path="/admin/stats/:ricorsoId" element={<RicorsoStats />} />
+            <Route path="/admin/admins" element={<AdminManagement />} />
+            <Route path="/admin/register/:token" element={<AdminRegister />} />
           </Routes>
         </BrowserRouter>
       </div>
