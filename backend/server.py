@@ -215,6 +215,104 @@ async def upload_file(
     return {"message": "File uploaded successfully", "filename": file.filename}
 
 
+@api_router.post("/upload-esempio/{ricorso_id}/{document_id}")
+async def upload_esempio_file(
+    ricorso_id: str,
+    document_id: str,
+    file: UploadFile = File(...),
+    username: str = Depends(verify_token)
+):
+    """Upload an example file for a document (admin only)"""
+    # Validate file type
+    file_ext = file.filename.split('.')[-1].lower()
+    allowed_extensions = ['pdf', 'jpg', 'jpeg', 'png']
+    if file_ext not in allowed_extensions:
+        raise HTTPException(status_code=400, detail=f"File type not allowed. Allowed: {allowed_extensions}")
+    
+    # Check if ricorso exists
+    ricorso = await db.ricorsi.find_one({"id": ricorso_id})
+    if not ricorso:
+        raise HTTPException(status_code=404, detail="Ricorso not found")
+    
+    # Create directory for examples
+    esempio_dir = EXAMPLES_DIR / ricorso_id
+    esempio_dir.mkdir(exist_ok=True)
+    
+    # Save file
+    filename = f"{document_id}_esempio.{file_ext}"
+    file_path = esempio_dir / filename
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    
+    # Update ricorso with esempio file URL
+    esempio_url = f"/api/esempio/{ricorso_id}/{document_id}"
+    
+    # Find the document in the ricorso and update it
+    ricorso_obj = Ricorso(**ricorso)
+    for doc in ricorso_obj.documenti_richiesti:
+        if doc.id == document_id:
+            doc.esempio_file_url = esempio_url
+            break
+    
+    await db.ricorsi.update_one(
+        {"id": ricorso_id},
+        {"$set": {"documenti_richiesti": [doc.dict() for doc in ricorso_obj.documenti_richiesti]}}
+    )
+    
+    return {"message": "Example file uploaded successfully", "url": esempio_url}
+
+
+@api_router.get("/esempio/{ricorso_id}/{document_id}")
+async def get_esempio_file(ricorso_id: str, document_id: str):
+    """Get an example file"""
+    esempio_dir = EXAMPLES_DIR / ricorso_id
+    
+    # Try to find the file with any extension
+    for ext in ['pdf', 'jpg', 'jpeg', 'png']:
+        file_path = esempio_dir / f"{document_id}_esempio.{ext}"
+        if file_path.exists():
+            return FileResponse(file_path)
+    
+    raise HTTPException(status_code=404, detail="Example file not found")
+
+
+@api_router.delete("/esempio/{ricorso_id}/{document_id}")
+async def delete_esempio_file(
+    ricorso_id: str,
+    document_id: str,
+    username: str = Depends(verify_token)
+):
+    """Delete an example file (admin only)"""
+    esempio_dir = EXAMPLES_DIR / ricorso_id
+    
+    # Try to find and delete the file with any extension
+    deleted = False
+    for ext in ['pdf', 'jpg', 'jpeg', 'png']:
+        file_path = esempio_dir / f"{document_id}_esempio.{ext}"
+        if file_path.exists():
+            file_path.unlink()
+            deleted = True
+    
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Example file not found")
+    
+    # Update ricorso to remove esempio_file_url
+    ricorso = await db.ricorsi.find_one({"id": ricorso_id})
+    if ricorso:
+        ricorso_obj = Ricorso(**ricorso)
+        for doc in ricorso_obj.documenti_richiesti:
+            if doc.id == document_id:
+                doc.esempio_file_url = None
+                break
+        
+        await db.ricorsi.update_one(
+            {"id": ricorso_id},
+            {"$set": {"documenti_richiesti": [doc.dict() for doc in ricorso_obj.documenti_richiesti]}}
+        )
+    
+    return {"message": "Example file deleted successfully"}
+
+
 @api_router.get("/submissions")
 async def get_submissions(ricorso_id: Optional[str] = None, username: str = Depends(verify_token)):
     """Get all submissions (admin only)"""
