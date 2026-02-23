@@ -287,7 +287,7 @@ async def get_ricorsi(attivo: Optional[bool] = None):
     if attivo is not None:
         query["attivo"] = attivo
     
-    ricorsi = await db.ricorsi.find(query, {"_id": 0}).sort("created_at", -1).to_list(100)
+    ricorsi = await db.ricorsi.find(query, {"_id": 0}).sort("created_at", -1).limit(100).to_list(100)
     return [Ricorso(**r) for r in ricorsi]
 
 
