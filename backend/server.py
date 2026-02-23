@@ -369,7 +369,6 @@ async def get_submissions_stats(ricorso_id: str, username: str = Depends(verify_
         })
     
     # Calculate scadenze imminenti (entro 30 giorni)
-    from datetime import timedelta
     scadenze_imminenti = []
     scadenze_regioni = ricorso.get("scadenze_regioni", {})
     
