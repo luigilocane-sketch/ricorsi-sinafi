@@ -215,6 +215,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "Delete functionality working correctly. DELETE /api/ricorsi/{id} with auth token successfully removes ricorso and returns success message 'Ricorso deleted successfully'."
+      - working: true
+        agent: "testing"
+        comment: "COMPREHENSIVE DELETE TEST PASSED: Verified complete DELETE workflow: 1) Admin login successful, 2) Ricorsi list retrieval working, 3) DELETE /api/ricorsi/{id} with auth returns 200 status and 'Ricorso deleted successfully', 4) Deletion verified - ricorso no longer exists in list, 5) Unauthorized delete properly denied with 403 status. All 5 test steps passed (100%). DELETE functionality is fully operational."
 
   - task: "MongoDB ObjectId Serialization Fix"
     implemented: true
