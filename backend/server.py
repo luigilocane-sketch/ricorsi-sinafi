@@ -328,12 +328,18 @@ async def get_submissions(ricorso_id: Optional[str] = None, username: str = Depe
 async def get_submissions_stats(ricorso_id: str, username: str = Depends(verify_token)):
     """Get statistics by region for a ricorso (admin only)"""
     # Get ricorso
-    ricorso = await db.ricorsi.find_one({"id": ricorso_id})
+    ricorso = await db.ricorsi.find_one(
+        {"id": ricorso_id},
+        {"_id": 0, "id": 1, "titolo": 1, "campi_dati": 1, "scadenze_regioni": 1, "scadenza_generale": 1}
+    )
     if not ricorso:
         raise HTTPException(status_code=404, detail="Ricorso not found")
     
     # Get all submissions for this ricorso
-    submissions = await db.submissions.find({"ricorso_id": ricorso_id}).to_list(10000)
+    submissions = await db.submissions.find(
+        {"ricorso_id": ricorso_id},
+        {"_id": 0, "id": 1, "reference_id": 1, "submitted_at": 1, "dati_utente": 1}
+    ).to_list(10000)
     
     # Find the regione field
     regione_field_id = None
