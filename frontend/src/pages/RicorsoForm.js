@@ -353,6 +353,68 @@ function RicorsoForm() {
             </div>
           </div>
 
+          {/* Scadenze per Regione */}
+          <div className="bg-white border border-slate-200 rounded-sm shadow-[4px_4px_0px_0px_rgba(26,74,46,0.1)] overflow-hidden">
+            <div className="bg-[#1a4a2e] px-6 py-4">
+              <h3 className="text-white font-bold text-lg flex items-center gap-2">
+                <Calendar size={20} />
+                Scadenze per Regione
+              </h3>
+              <p className="text-green-200 text-xs mt-1">
+                Imposta scadenze specifiche per ogni regione o una scadenza generale
+              </p>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="text-sm font-bold text-[#1a4a2e] mb-2 block uppercase tracking-wide">
+                  Scadenza Generale (opzionale)
+                </label>
+                <input
+                  type="date"
+                  value={formData.scadenza_generale || ''}
+                  onChange={(e) => setFormData({ ...formData, scadenza_generale: e.target.value })}
+                  className="w-full h-12 rounded-sm border border-slate-300 bg-white px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a4a2e] focus:border-transparent"
+                />
+                <p className="text-xs text-slate-500 mt-1">
+                  Applicata a tutte le regioni che non hanno una scadenza specifica
+                </p>
+              </div>
+
+              <div className="border-t border-slate-200 pt-4">
+                <label className="text-sm font-bold text-[#1a4a2e] mb-3 block uppercase tracking-wide">
+                  Scadenze Specifiche per Regione
+                </label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {[
+                    'Abruzzo', 'Basilicata', 'Calabria', 'Campania', 'Emilia-Romagna',
+                    'Friuli-Venezia Giulia', 'Lazio', 'Liguria', 'Lombardia', 'Marche',
+                    'Molise', 'Piemonte', 'Puglia', 'Sardegna', 'Sicilia', 'Toscana',
+                    'Trentino-Alto Adige', 'Umbria', "Valle d'Aosta", 'Veneto'
+                  ].map(regione => (
+                    <div key={regione} className="flex items-center gap-2">
+                      <label className="text-xs text-slate-600 w-32 flex-shrink-0">{regione}:</label>
+                      <input
+                        type="date"
+                        value={formData.scadenze_regioni?.[regione] || ''}
+                        onChange={(e) => {
+                          const newScadenze = { ...formData.scadenze_regioni };
+                          if (e.target.value) {
+                            newScadenze[regione] = e.target.value;
+                          } else {
+                            delete newScadenze[regione];
+                          }
+                          setFormData({ ...formData, scadenze_regioni: newScadenze });
+                        }}
+                        className="flex-1 h-9 rounded-sm border border-slate-300 bg-white px-3 text-xs focus:outline-none focus:ring-2 focus:ring-[#1a4a2e] focus:border-transparent"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+
           {/* Campi Dati */}
           <div className="bg-white border border-slate-200 rounded-sm shadow-[4px_4px_0px_0px_rgba(26,74,46,0.1)] overflow-hidden">
             <div className="bg-[#1a4a2e] px-6 py-4 flex items-center justify-between">
