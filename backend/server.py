@@ -516,7 +516,7 @@ async def get_submissions_stats(ricorso_id: str, username: str = Depends(verify_
     submissions = await db.submissions.find(
         {"ricorso_id": ricorso_id},
         {"_id": 0, "id": 1, "reference_id": 1, "submitted_at": 1, "dati_utente": 1}
-    ).to_list(10000)
+    ).limit(5000).to_list(5000)
     
     # Find the regione field
     regione_field_id = None
