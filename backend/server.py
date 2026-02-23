@@ -235,7 +235,7 @@ async def register_admin_with_invite(registration: AdminRegisterWithToken):
 @api_router.get("/admin/list")
 async def list_admins(username: str = Depends(verify_token)):
     """Get list of all admins (admin only)"""
-    admins = await db.admins.find({}, {"password_hash": 0}).sort("created_at", -1).limit(100).to_list(100)
+    admins = await db.admins.find({}, {"password_hash": 0, "_id": 0}).sort("created_at", -1).limit(100).to_list(100)
     return admins
 
 
@@ -263,7 +263,7 @@ async def delete_admin(admin_id: str, username: str = Depends(verify_token)):
 @api_router.get("/admin/invites")
 async def list_invites(username: str = Depends(verify_token)):
     """Get list of all invite tokens (admin only)"""
-    invites = await db.invite_tokens.find({}).sort("created_at", -1).limit(100).to_list(100)
+    invites = await db.invite_tokens.find({}, {"_id": 0}).sort("created_at", -1).limit(100).to_list(100)
     return invites
 
 
