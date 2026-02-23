@@ -532,6 +532,57 @@ function RicorsoForm() {
                         Documento Obbligatorio
                       </label>
                     </div>
+
+                    {/* File di Esempio */}
+                    <div className="mt-3 pt-3 border-t border-slate-200">
+                      <label className="text-xs font-semibold text-slate-600 mb-2 block">
+                        File di Esempio (opzionale)
+                      </label>
+                      {doc.esempio_file_url ? (
+                        <div className="flex items-center gap-2">
+                          <a
+                            href={`${process.env.REACT_APP_BACKEND_URL}${doc.esempio_file_url}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sm text-green-600 hover:text-green-700 underline flex items-center gap-1"
+                          >
+                            <FileText size={14} />
+                            Visualizza esempio
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => handleEsempioDelete(index)}
+                            className="text-red-600 hover:text-red-700 transition-colors"
+                          >
+                            <X size={16} />
+                          </button>
+                        </div>
+                      ) : (
+                        <label className="cursor-pointer">
+                          <input
+                            type="file"
+                            accept=".pdf,.jpg,.jpeg,.png"
+                            onChange={(e) => {
+                              const file = e.target.files[0];
+                              if (file) handleEsempioUpload(index, file);
+                            }}
+                            className="hidden"
+                            disabled={!isEdit}
+                          />
+                          <span className={`inline-flex items-center gap-2 px-3 py-2 rounded-sm text-xs font-semibold transition-colors ${
+                            isEdit 
+                              ? 'bg-green-600 text-white hover:bg-green-700 cursor-pointer' 
+                              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                          }`}>
+                            <Upload size={14} />
+                            {isEdit ? 'Carica Esempio' : 'Salva prima il ricorso'}
+                          </span>
+                        </label>
+                      )}
+                      <p className="text-xs text-slate-500 mt-1">
+                        Gli utenti vedranno questo file come esempio
+                      </p>
+                    </div>
                   </div>
                 ))
               )}
