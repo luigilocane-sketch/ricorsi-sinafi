@@ -32,6 +32,10 @@ db = client[os.environ['DB_NAME']]
 UPLOADS_DIR = ROOT_DIR / 'uploads'
 UPLOADS_DIR.mkdir(exist_ok=True)
 
+# Examples directory
+EXAMPLES_DIR = ROOT_DIR / 'examples'
+EXAMPLES_DIR.mkdir(exist_ok=True)
+
 # Create the main app
 app = FastAPI()
 
