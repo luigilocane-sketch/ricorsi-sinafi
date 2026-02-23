@@ -37,8 +37,8 @@ function AdminLogin() {
     <div className="min-h-screen bg-gradient-to-br from-[#1a4a2e] to-[#2d5a3f] flex items-center justify-center p-4">
       <div className="bg-white rounded-sm shadow-[8px_8px_0px_0px_rgba(0,0,0,0.3)] w-full max-w-md p-8">
         <div className="flex flex-col items-center mb-8">
-          <div className="w-16 h-16 bg-[#1a4a2e] rounded-full flex items-center justify-center mb-4">
-            <Shield className="text-white" size={32} />
+          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center p-2 mb-4">
+            <img src="/sinafi-logo.png" alt="Si.Na.Fi Logo" className="w-full h-full object-contain" />
           </div>
           <h1 className="text-2xl font-black text-[#1a4a2e]">Area Admin</h1>
           <p className="text-slate-600 text-sm">Ricorsi Si.Na.Fi</p>
