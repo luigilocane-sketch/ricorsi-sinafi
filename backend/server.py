@@ -158,7 +158,7 @@ async def create_submission(
 ):
     """Create a new submission"""
     # Get ricorso
-    ricorso = await db.ricorsi.find_one({"id": ricorso_id})
+    ricorso = await db.ricorsi.find_one({"id": ricorso_id}, {"_id": 0})
     if not ricorso:
         raise HTTPException(status_code=404, detail="Ricorso not found")
     
