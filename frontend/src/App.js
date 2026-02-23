@@ -7,6 +7,7 @@ import PublicRicorsoPage from './pages/PublicRicorsoPage';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import RicorsoForm from './pages/RicorsoForm';
+import RicorsoStats from './pages/RicorsoStats';
 import { useEffect } from 'react';
 
 function App() {
