@@ -102,13 +102,22 @@ function AdminDashboard() {
             <h2 className="text-3xl font-black text-[#1a4a2e] mb-2">Gestione Ricorsi</h2>
             <p className="text-slate-600">Crea e gestisci i ricorsi collettivi</p>
           </div>
-          <button
-            onClick={() => navigate('/admin/ricorso/nuovo')}
-            className="bg-[#FFD700] text-[#1a4a2e] hover:bg-[#e6c200] font-bold uppercase tracking-wide px-6 py-3 rounded-sm shadow-[4px_4px_0px_0px_rgba(26,74,46,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-2"
-          >
-            <Plus size={20} />
-            Nuovo Ricorso
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => navigate('/admin/admins')}
+              className="bg-blue-600 text-white hover:bg-blue-700 font-bold uppercase tracking-wide px-6 py-3 rounded-sm shadow-[4px_4px_0px_0px_rgba(26,74,46,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-2"
+            >
+              <Users size={20} />
+              Gestione Admin
+            </button>
+            <button
+              onClick={() => navigate('/admin/ricorso/nuovo')}
+              className="bg-[#FFD700] text-[#1a4a2e] hover:bg-[#e6c200] font-bold uppercase tracking-wide px-6 py-3 rounded-sm shadow-[4px_4px_0px_0px_rgba(26,74,46,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-2"
+            >
+              <Plus size={20} />
+              Nuovo Ricorso
+            </button>
+          </div>
         </div>
 
         {/* Ricorsi List */}
