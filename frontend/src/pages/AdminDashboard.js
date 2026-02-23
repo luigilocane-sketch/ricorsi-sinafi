@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getRicorsi, deleteRicorso } from '../services/api';
-import { Shield, Plus, Edit, Trash2, LogOut, Eye, EyeOff, FileText } from 'lucide-react';
+import { Shield, Plus, Edit, Trash2, LogOut, Eye, EyeOff, FileText, BarChart3 } from 'lucide-react';
 import { toast } from '../hooks/use-toast';
 
 function AdminDashboard() {
