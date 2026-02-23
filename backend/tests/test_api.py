@@ -85,8 +85,8 @@ class TestAdminAuth:
     def test_admin_check_unauthorized(self):
         """Test admin check without token"""
         response = requests.get(f"{API_URL}/admin/check")
-        assert response.status_code == 401
-        print("Unauthorized check correctly rejected")
+        assert response.status_code in [401, 403]  # FastAPI returns 403 for missing token
+        print(f"Unauthorized check correctly rejected with status {response.status_code}")
 
 
 class TestRicorsiCRUD:
@@ -234,8 +234,8 @@ class TestRicorsiCRUD:
     def test_delete_ricorso_unauthorized(self):
         """Test deleting ricorso without token"""
         response = requests.delete(f"{API_URL}/ricorsi/some-id")
-        assert response.status_code == 401
-        print("Unauthorized delete correctly rejected")
+        assert response.status_code in [401, 403]  # FastAPI returns 403 for missing token
+        print(f"Unauthorized delete correctly rejected with status {response.status_code}")
     
     def test_update_ricorso(self, auth_token):
         """Test updating a ricorso"""
@@ -354,8 +354,8 @@ class TestSubmissions:
     def test_get_submissions_unauthorized(self):
         """Test getting submissions without auth"""
         response = requests.get(f"{API_URL}/submissions")
-        assert response.status_code == 401
-        print("Submissions endpoint correctly requires authentication")
+        assert response.status_code in [401, 403]  # FastAPI returns 403 for missing token
+        print(f"Submissions endpoint correctly requires authentication (status {response.status_code})")
     
     def test_get_submissions_stats(self, auth_token, ricorso_id):
         """Test getting submission stats"""
