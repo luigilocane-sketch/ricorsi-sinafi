@@ -45,3 +45,12 @@ input[type="number"] {
 ::-webkit-scrollbar-thumb:hover {
   background: #0f2d1c;
 }
+
+/* Hide Emergent badge */
+#emergent-badge,
+a[href*="emergent"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
