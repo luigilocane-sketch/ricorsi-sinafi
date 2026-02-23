@@ -34,6 +34,7 @@ class DocumentoRichiesto(BaseModel):
     label: str
     required: bool = True
     fileType: FileType = FileType.PDF
+    esempio_file_url: Optional[str] = None  # URL del file di esempio
 
 
 class Ricorso(BaseModel):
