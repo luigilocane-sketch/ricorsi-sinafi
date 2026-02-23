@@ -4,8 +4,9 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+import os
 
-SECRET_KEY = "your-secret-key-change-in-production-2026"
+SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key-change-in-production-2026')
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 480  # 8 hours
 
