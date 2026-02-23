@@ -58,6 +58,8 @@ class RicorsoCreate(BaseModel):
     campi_dati: List[CampoData]
     documenti_richiesti: List[DocumentoRichiesto]
     attivo: bool = True
+    scadenze_regioni: Optional[Dict[str, str]] = None
+    scadenza_generale: Optional[str] = None
 
 
 class RicorsoUpdate(BaseModel):
@@ -67,6 +69,8 @@ class RicorsoUpdate(BaseModel):
     campi_dati: Optional[List[CampoData]] = None
     documenti_richiesti: Optional[List[DocumentoRichiesto]] = None
     attivo: Optional[bool] = None
+    scadenze_regioni: Optional[Dict[str, str]] = None
+    scadenza_generale: Optional[str] = None
 
 
 class Admin(BaseModel):
