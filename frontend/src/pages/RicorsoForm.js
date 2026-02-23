@@ -40,6 +40,8 @@ function RicorsoForm() {
     attivo: true,
     campi_dati: [],
     documenti_richiesti: [],
+    scadenza_generale: '',
+    scadenze_regioni: {},
   });
 
   useEffect(() => {
