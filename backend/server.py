@@ -263,7 +263,7 @@ async def delete_admin(admin_id: str, username: str = Depends(verify_token)):
 @api_router.get("/admin/invites")
 async def list_invites(username: str = Depends(verify_token)):
     """Get list of all invite tokens (admin only)"""
-    invites = await db.invite_tokens.find({}).sort("created_at", -1).to_list(100)
+    invites = await db.invite_tokens.find({}).sort("created_at", -1).limit(100).to_list(100)
     return invites
 
 
