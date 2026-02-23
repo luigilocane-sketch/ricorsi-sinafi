@@ -8,6 +8,8 @@ import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import RicorsoForm from './pages/RicorsoForm';
 import RicorsoStats from './pages/RicorsoStats';
+import AdminManagement from './pages/AdminManagement';
+import AdminRegister from './pages/AdminRegister';
 import { useEffect } from 'react';
 
 function App() {
