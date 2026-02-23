@@ -185,6 +185,61 @@ function RicorsoForm() {
     setFormData({ ...formData, documenti_richiesti: newDocs });
   };
 
+  const handleEsempioUpload = async (index, file) => {
+    if (!isEdit) {
+      toast({
+        title: 'Salva prima il ricorso',
+        description: 'Devi prima salvare il ricorso prima di caricare file di esempio',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      const doc = formData.documenti_richiesti[index];
+      await uploadEsempioFile(id, doc.id, file);
+      
+      // Update local state
+      const newDocs = [...formData.documenti_richiesti];
+      newDocs[index].esempio_file_url = `/api/esempio/${id}/${doc.id}`;
+      setFormData({ ...formData, documenti_richiesti: newDocs });
+      
+      toast({
+        title: 'Successo',
+        description: 'File di esempio caricato',
+      });
+    } catch (error) {
+      toast({
+        title: 'Errore',
+        description: 'Impossibile caricare il file di esempio',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleEsempioDelete = async (index) => {
+    try {
+      const doc = formData.documenti_richiesti[index];
+      await deleteEsempioFile(id, doc.id);
+      
+      // Update local state
+      const newDocs = [...formData.documenti_richiesti];
+      newDocs[index].esempio_file_url = null;
+      setFormData({ ...formData, documenti_richiesti: newDocs });
+      
+      toast({
+        title: 'Successo',
+        description: 'File di esempio eliminato',
+      });
+    } catch (error) {
+      toast({
+        title: 'Errore',
+        description: 'Impossibile eliminare il file di esempio',
+        variant: 'destructive',
+      });
+    }
+  };
+
   const removeDocumento = (index) => {
     const newDocs = formData.documenti_richiesti.filter((_, i) => i !== index);
     setFormData({ ...formData, documenti_richiesti: newDocs });
