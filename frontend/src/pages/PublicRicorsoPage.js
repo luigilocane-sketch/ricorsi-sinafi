@@ -410,6 +410,17 @@ function PublicRicorsoPage() {
                       {errors[doc.id] && (
                         <p className="text-xs text-red-600 mt-1">{errors[doc.id]}</p>
                       )}
+                      {doc.esempio_file_url && (
+                        <a
+                          href={`${BACKEND_URL}${doc.esempio_file_url}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-blue-600 hover:text-blue-700 underline flex items-center gap-1 mt-2"
+                        >
+                          <ExternalLink size={14} />
+                          Vedi esempio
+                        </a>
+                      )}
                     </div>
                     <div className="flex items-center gap-2">
                       <label className="cursor-pointer">
