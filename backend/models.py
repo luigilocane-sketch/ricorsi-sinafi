@@ -45,6 +45,8 @@ class Ricorso(BaseModel):
     campi_dati: List[CampoData]
     documenti_richiesti: List[DocumentoRichiesto]
     attivo: bool = True
+    scadenze_regioni: Optional[Dict[str, str]] = None  # {"Lazio": "2026-12-31", "Lombardia": "2026-11-30"}
+    scadenza_generale: Optional[str] = None  # Scadenza di default se non specificata per regione
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
