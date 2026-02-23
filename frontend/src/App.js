@@ -7,8 +7,36 @@ import PublicRicorsoPage from './pages/PublicRicorsoPage';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import RicorsoForm from './pages/RicorsoForm';
+import { useEffect } from 'react';
 
 function App() {
+  // Remove Emergent badge
+  useEffect(() => {
+    const removeBadge = () => {
+      const badge = document.getElementById('emergent-badge');
+      if (badge) {
+        badge.remove();
+      }
+      // Also check for any links to emergent
+      const links = document.querySelectorAll('a[href*="emergent"]');
+      links.forEach(link => link.remove());
+    };
+    
+    // Try to remove immediately
+    removeBadge();
+    
+    // And also after a delay in case it's injected later
+    setTimeout(removeBadge, 1000);
+    setTimeout(removeBadge, 2000);
+    setTimeout(removeBadge, 3000);
+    
+    // Set up mutation observer to catch dynamically added badges
+    const observer = new MutationObserver(removeBadge);
+    observer.observe(document.body, { childList: true, subtree: true });
+    
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <AuthProvider>
       <div className="App">
